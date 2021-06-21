@@ -27,6 +27,14 @@ class User:
         user = results[0]
         return user
 
+    @classmethod
+    def get_by_email(cls, data):
+        query = "SELECT * FROM users WHERE email = %(email)s;"
+        result = connectToMySQL('login_registration').query_db( query, data )
+        if len(result) < 1:
+            return False
+        return cls(result[0])
+
     @staticmethod
     def validate(data):
         is_valid = True
@@ -56,6 +64,8 @@ class User:
             flash("Passwords must match")
         
         return is_valid
+
+    
 
         
         
