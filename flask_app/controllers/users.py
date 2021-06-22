@@ -22,8 +22,9 @@ def create_user():
             "password": pw_hash
         }
         # create the new user
-        User.create(data)
+        user_id = User.create(data)
         # save that user into session
+        session['user_id'] = user_id
         session["first_name"] = data["first_name"]
         flash("You've been logged in!")
         return redirect("/success")
@@ -33,7 +34,7 @@ def create_user():
 
 @app.route("/success")
 def welcome_user():
-    if not "first_name" in session:
+    if not "user_id" in session:
         flash("You need to login first!")
         return redirect("/")
     return render_template('welcome_user.html')
@@ -50,13 +51,13 @@ def login():
         flash("Invalid Email/Password")
         return redirect("/")
     
+    session['user_id'] = user_in_db.id
     session['first_name'] = user_in_db.first_name
     flash("You've been logged in!")
     return redirect("/success")
 
 @app.route("/logout")
 def logout():
-    if "first_name" in session:
-        flash("You've been logged out.")
-        session.pop("first_name", None)
-        return redirect("/")
+    flash("You've been logged out.")
+    session.clear()
+    return redirect("/")

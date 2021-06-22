@@ -34,7 +34,7 @@ class User:
         # get a user by it's email
         query = "SELECT * FROM users WHERE email = %(email)s;"
         result = connectToMySQL('login_registration').query_db( query, data )
-        if len(result) < 1:
+        if len(result) != 1:
             return False
         return cls(result[0])
 
@@ -43,9 +43,9 @@ class User:
         # validate a new user's info inputed into the form
         is_valid = True
 
-        name_regex = re.compile(r'[A-Za-z]{2,50}$')
+        name_regex = re.compile(r'^[A-Za-z]{2,50}$')
         email_regex = re.compile(r'^[a-zA-Z0-9.+_-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]+$')
-        password_regex = re.compile(r'[A-Za-z0-9]{8,15}$')
+        password_regex = re.compile(r'^[A-Za-z0-9]{8,15}$')
 
         if not name_regex.match(data['first_name']):
             # checks if the name is valid
